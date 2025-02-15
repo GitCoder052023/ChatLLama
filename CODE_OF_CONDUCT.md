@@ -21,7 +21,7 @@ Examples of unacceptable behavior include:
 
 ## Reporting
 
-If you experience or witness any behavior that violates this Code of Conduct, please report it by contacting the project maintainers at [contact.khub.dev@gmail.com]. All reports will be reviewed and investigated in a timely manner.
+If you experience or witness any behavior that violates this Code of Conduct, please report it by contacting the project maintainers at contact.khub.dev@gmail.com. All reports will be reviewed and investigated in a timely manner.
 
 ## Enforcement
 
