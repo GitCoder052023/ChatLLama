@@ -1,6 +1,5 @@
 # ChatLLama
 
-[![Build Status](https://img.shields.io/travis/GitCoder052023/ChatLLama.svg?style=flat-square)](https://travis-ci.com/GitCoder052023/ChatLLama)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENCE.md)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](package.json)
 [![Contributors](https://img.shields.io/github/contributors/GitCoder052023/ChatLLama.svg)](https://github.com/GitCoder052023/ChatLLama/graphs/contributors)
