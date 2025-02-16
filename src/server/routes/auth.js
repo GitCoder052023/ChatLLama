@@ -5,11 +5,10 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   const { username, password, email } = req.body;
-  // Validate email ends with '@gmail.com'
   if (!email || !email.endsWith('@gmail.com')) {
     return res.status(400).json({ success: false, message: 'Email must be a valid Gmail address.' });
   }
-  // Validate password with regex: at least 8 characters, one uppercase, one lowercase, one digit, and one special character
+
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
   if (!passwordRegex.test(password)) {
     return res.status(400).json({ success: false, message: 'Password does not meet the requirements.' });

@@ -24,6 +24,8 @@
 
 .chat-message {
   animation: floatIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+  max-width: 48rem;
+  margin: 0 auto;
 }
 
 .typing-indicator {
@@ -84,4 +86,37 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.font-google-sans {
+    font-family: 'Google Sans', sans-serif;
+}
+
+#chat-window {
+    scroll-behavior: smooth;
+}
+
+.message-bubble {
+    border-radius: 1.5rem;
+    padding: 1rem 1.5rem;
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.user-message {
+    background-color: #f8f9fa;
+}
+
+.bot-message {
+    background-color: white;
+}
+
+/* Ensure the greeting container fades out smoothly */
+#greeting-container {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.fade-out {
+  opacity: 0;
 }
