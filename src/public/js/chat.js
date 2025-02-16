@@ -1,7 +1,6 @@
 import { appendMessage } from './chat/messageRenderer.js';
 import { initializeSocketEvents } from './chat/socketHandler.js';
 import { initProfile } from './chat/profileHandler.js';
-import { initializeModelSelector } from './chat/modelHandler.js';
 
 const backendHost = document.querySelector('meta[name="backend-host"]').content;
 const BACKEND_URL = `http://${backendHost}:5000`;
@@ -28,7 +27,6 @@ function createGreetingContainer() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await initializeModelSelector(BACKEND_URL);
     initProfile(BACKEND_URL);
     
     const chatWindow = document.getElementById('chat-window');
@@ -38,7 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
     const sendButton = chatForm.querySelector('button[type="submit"]');
-    const modelDropdown = document.getElementById('model-dropdown');
 
     chatForm.addEventListener('submit', (e) => {
         const greetingElem = document.getElementById('greeting-container');
@@ -62,8 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         appendMessage(message, 'user');
         socket.emit('chat message', { 
-            message,
-            model: modelDropdown.value 
+            message
         });
         chatInput.value = '';
     });
@@ -75,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const streamHandler = initializeSocketEvents(
         socket, 
-        { chatWindow, sendButton, chatInput, modelDropdown }, 
+        { chatWindow, sendButton, chatInput }, 
         appendMessage
     );
 
