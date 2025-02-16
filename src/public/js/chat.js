@@ -2,7 +2,8 @@ import { appendMessage } from './chat/messageRenderer.js';
 import { initializeSocketEvents } from './chat/socketHandler.js';
 import { initProfile } from './chat/profileHandler.js';
 
-const BACKEND_URL = 'http://192.168.1.2:5000';
+const backendHost = document.querySelector('meta[name="backend-host"]').content;
+const BACKEND_URL = `http://${backendHost}:5000`;
 const socket = io(BACKEND_URL);
 
 const chatWindow = document.getElementById('chat-window');

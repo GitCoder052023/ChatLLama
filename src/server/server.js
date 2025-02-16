@@ -44,6 +44,7 @@ const initializeSocket = require('./socket/chatSocket');
 initializeSocket(server);
 
 const BACKEND_PORT = process.env.PORT || 5000;
+const HOST = process.env.HOST || getLocalIPv4();
 server.listen(BACKEND_PORT, () => {
-  console.log(`Backend server running on port ${BACKEND_PORT}`);
+  console.log(`ChatLLama Server running on port http://${HOST}:${BACKEND_PORT}`);
 });

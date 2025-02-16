@@ -1,4 +1,5 @@
-const BACKEND_URL = 'http://192.168.1.2:5000';
+const backendHost = document.querySelector('meta[name="backend-host"]').content;
+const BACKEND_URL = `http://${backendHost}:5000`;
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
