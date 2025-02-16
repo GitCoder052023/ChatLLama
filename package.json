@@ -6,8 +6,6 @@
     "start": "nodemon src/app.js",
     "server": "nodemon src/server/server.js",
     "build:css": "npx @tailwindcss/cli -i ./src/public/css/main.css -o ./src/public/css/tailwind.css --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write \"**/*.{js,json,css,md,html}\"",
     "dev": "concurrently \"npm:server\" \"npm:start\" \"npm:build:css\""
   },
   "dependencies": {
@@ -26,11 +24,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "eslint": "^9.20.1",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.5.1"
-  }
+  "description": ""
 }
