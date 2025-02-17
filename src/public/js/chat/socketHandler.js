@@ -2,11 +2,13 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
     let currentResponse = '';
     let currentTypingElem = null;
     let streaming = false;
+    let currentModel = null;
 
     socket.on('chat response', (data) => {
         const chunk = data.chunk;
         if (chunk === '[STREAM_START]') {
             currentResponse = '';
+            currentModel = data.model || '';
             currentTypingElem = createTypingIndicator();
             chatWindow.appendChild(currentTypingElem);
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
@@ -18,8 +20,9 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
                 chatWindow.removeChild(currentTypingElem);
                 currentTypingElem = null;
             }
-            appendMessage(currentResponse, 'bot');
+            appendMessage(currentResponse, 'bot', currentModel);
             currentResponse = '';
+            currentModel = null;
             streaming = false;
             sendButton.innerHTML = '<i class="fas fa-paper-plane text-lg"></i>';
             chatInput.required = true;
@@ -29,7 +32,7 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
                 const bubble = currentTypingElem.querySelector('.max-w-xl');
                 bubble.innerHTML = marked.parse(currentResponse);
             } else {
-                appendMessage(chunk, 'bot');
+                appendMessage(chunk, 'bot', currentModel);
             }
         }
     });

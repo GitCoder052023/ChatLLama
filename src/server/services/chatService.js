@@ -7,12 +7,12 @@ let isProcessing = false;
 let chatQueue = [];
 let runningRequests = {};
 
-async function processOllamaModel(message, onChunk, signal) {
+async function processOllamaModel(model, message, onChunk, signal) {
   try {
     const response = await axios.post(
       `${OLLAMA_API_URL}/api/generate`,
       {
-        model: "deepseek-r1:1.5b",
+        model: model,
         prompt: message,
         stream: true
       },
@@ -36,8 +36,6 @@ async function processOllamaModel(message, onChunk, signal) {
     }
   } catch (error) {
     if (error.name === 'AbortError' || error.code === 'ERR_CANCELED') {
-      console.log("Model request was aborted by the user.");
-      // Optionally, you could send a message back here if desired.
     } else {
       console.error("Error calling Ollama API:", error);
       onChunk("Error generating response.");
@@ -49,18 +47,17 @@ async function processOllamaModel(message, onChunk, signal) {
 async function processQueue() {
   if (isProcessing || chatQueue.length === 0) return;
   isProcessing = true;
-  const { socket, message } = chatQueue.shift();
-  socket.emit('chat response', { chunk: '[STREAM_START]' });
+  const { socket, message, model } = chatQueue.shift();
+  socket.emit('chat response', { chunk: '[STREAM_START]', model });
   
   const controller = new AbortController();
   runningRequests[socket.id] = controller;
 
   try {
-    await processOllamaModel(message, (chunk) => {
+    await processOllamaModel(model, message, (chunk) => {
       socket.emit('chat response', { chunk });
     }, controller.signal);
   } catch (error) {
-    // If the error was due to aborting, no further action is needed.
   }
   
   delete runningRequests[socket.id];
@@ -71,8 +68,8 @@ async function processQueue() {
   }
 }
 
-function addToQueue(socket, message) {
-  chatQueue.push({ socket, message });
+function addToQueue(socket, message, model) {
+  chatQueue.push({ socket, message, model });
   processQueue();
 }
 

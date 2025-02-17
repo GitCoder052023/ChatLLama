@@ -27,6 +27,21 @@
     <div class="flex-1 overflow-y-auto p-2">
       <!-- Chat history will be populated here -->
     </div>
+
+    <!-- Custom Model Selector at the bottom of the sidebar -->
+    <div id="model-selector-wrapper" class="p-4 border-t border-gray-200">
+      <div id="model-selector" class="relative mt-2">
+        <button id="model-button" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded inline-flex justify-between items-center">
+          <span id="selected-model">Select a model</span>
+          <svg class="fill-current h-4 w-4 ml-2" viewBox="0 0 20 20">
+            <path d="M5.516 7.548L10 12.032l4.484-4.484L16 8.064 10 14.064 4 8.064z"/>
+          </svg>
+        </button>
+        <div id="model-options" class="origin-bottom-right absolute left-0 bottom-full mb-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
+          <!-- Options will be appended dynamically -->
+        </div>
+      </div>
+    </div>
   </aside>
 
   <main class="flex-1 flex flex-col">

@@ -9,6 +9,7 @@ require('dotenv').config({ path: path.join(__dirname, '../../', '.env') });
 
 const connectDatabase = require('./config/database');
 const authRoutes = require('./routes/auth');
+const modelsRoutes = require('./routes/models');
 const getLocalIPv4 = require('./utils/getLocalIPv4');
 
 const app = express();
@@ -39,6 +40,7 @@ app.use(express.json());
 connectDatabase();
 
 app.use('/api', authRoutes);
+app.use('/api/models', modelsRoutes);
 
 const initializeSocket = require('./socket/chatSocket');
 initializeSocket(server);

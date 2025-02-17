@@ -16,7 +16,7 @@ function initializeSocket(server) {
 
   io.on('connection', (socket) => {
     socket.on('chat message', (data) => {
-      addToQueue(socket, data.message);
+      addToQueue(socket, data.message, data.model);
     });
 
     socket.on('stop chat message', () => {
