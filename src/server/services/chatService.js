@@ -10,7 +10,7 @@ let runningRequests = {};
 async function processOllamaModel(message, onChunk, signal) {
   try {
     const response = await axios.post(
-      OLLAMA_API_URL,
+      `${OLLAMA_API_URL}/api/generate`,
       {
         model: "deepseek-r1:1.5b",
         prompt: message,
