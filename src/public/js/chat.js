@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 		appendMessage
 	);
 
+	chatInput.addEventListener('keydown', (e) => {
+		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault();
+			chatForm.dispatchEvent(new Event('submit'));
+		}
+	});
+
 	chatForm.addEventListener('submit', (e) => {
 		const greetingElem = document.getElementById('greeting-container');
 		if (greetingElem) {

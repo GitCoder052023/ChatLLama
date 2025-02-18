@@ -57,4 +57,14 @@ router.delete('/logout', async (req, res) => {
   }
 });
 
+router.post('/theme', async (req, res) => {
+  const { username, theme } = req.body;
+  try {
+      await User.findOneAndUpdate({ username }, { theme });
+      res.json({ success: true, message: 'Theme updated successfully' });
+  } catch (err) {
+      res.status(500).json({ success: false, message: 'Failed to update theme' });
+  }
+});
+
 module.exports = router;

@@ -2,6 +2,41 @@ export function initProfile(BACKEND_URL) {
     const profileIcon = document.getElementById('profile-icon');
     const profilePopup = document.getElementById('profile-popup');
     const profileInitials = document.getElementById('profile-initials');
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('theme', theme);
+
+        themeButtons.forEach(btn => {
+            btn.classList.toggle('bg-blue-100', btn.dataset.theme === theme);
+        });
+    }
+
+    applyTheme(savedTheme);
+
+    themeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const theme = btn.dataset.theme;
+            if (theme === 'system') {
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                applyTheme(systemTheme);
+            } else {
+                applyTheme(theme);
+            }
+        });
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (localStorage.getItem('theme') === 'system') {
+            applyTheme(e.matches ? 'dark' : 'light');
+        }
+    });
 
     profileIcon.addEventListener('mouseenter', () => {
         profileIcon.style.transform = 'scale(1.1)';
