@@ -29,7 +29,7 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
         } else {
             currentResponse += chunk;
             if (currentTypingElem) {
-                const bubble = currentTypingElem.querySelector('.max-w-xl');
+                const bubble = currentTypingElem.querySelector('.max-w-2xl');
                 bubble.innerHTML = marked.parse(currentResponse);
             } else {
                 appendMessage(chunk, 'bot', currentModel);
@@ -39,24 +39,19 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
 
     function createTypingIndicator() {
         const container = document.createElement('div');
-        container.className = 'message-container flex flex-col';
+        container.className = 'message-container flex flex-col w-full mb-4';
 
         const messageWrapper = document.createElement('div');
-        messageWrapper.className = 'flex gap-3 flex-row';
-
-        const avatar = document.createElement('div');
-        avatar.className = 'w-9 h-9 flex items-center justify-center rounded-xl bg-gray-200';
-        avatar.innerHTML = '<i class="fas fa-robot text-gray-600 text-lg"></i>';
+        messageWrapper.className = 'flex justify-start';
 
         const bubble = document.createElement('div');
-        bubble.className = 'max-w-xl p-4 rounded-2xl shadow-sm bg-white text-gray-800 rounded-bl-none';
+        bubble.className = 'max-w-2xl p-4 rounded-2xl bg-gray-100 text-gray-800 rounded-bl-md';
         bubble.innerHTML = `<div class="typing-indicator">
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </div>`;
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>`;
 
-        messageWrapper.appendChild(avatar);
         messageWrapper.appendChild(bubble);
         container.appendChild(messageWrapper);
         return container;

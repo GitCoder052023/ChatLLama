@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const chatInput = document.getElementById('chat-input');
 	const sendButton = chatForm.querySelector('button[type="submit"]');
 
+	const streamHandler = initializeSocketEvents(
+		socket, 
+		{ chatWindow, sendButton, chatInput }, 
+		appendMessage
+	);
+
 	chatForm.addEventListener('submit', (e) => {
 		const greetingElem = document.getElementById('greeting-container');
 		if (greetingElem) {
@@ -52,12 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 		chatWindow.appendChild(createGreetingContainer());
 	});
 	
-	const streamHandler = initializeSocketEvents(
-		socket, 
-		{ chatWindow, sendButton, chatInput }, 
-		appendMessage
-	);
-
 	const sidebar = document.getElementById('sidebar');
 	const headerTitle = document.getElementById('header-title');
 
