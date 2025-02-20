@@ -1,6 +1,6 @@
 const { Server } = require('socket.io');
 const getLocalIPv4 = require('../utils/getLocalIPv4');
-const { addToQueue, removeFromQueue, stopProcessing } = require('../services/chatService');
+const { addToQueue, removeFromQueue, stopProcessing, resetChatHistory } = require('../services/chatService');
 
 function initializeSocket(server) {
   const io = new Server(server, {
@@ -21,6 +21,10 @@ function initializeSocket(server) {
 
     socket.on('stop chat message', () => {
       stopProcessing(socket);
+    });
+
+    socket.on('reset_chat', () => {
+      resetChatHistory(socket.id);
     });
 
     socket.on('disconnect', () => {

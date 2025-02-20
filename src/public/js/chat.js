@@ -91,6 +91,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 			}
 		}
 	});
+
+	document.getElementById('new-chat').addEventListener('click', () => {
+		chatWindow.innerHTML = '';
+		chatWindow.appendChild(createGreetingContainer());
+		socket.emit('reset_chat');
+	  });
 });
 
 function createGreetingContainer() {

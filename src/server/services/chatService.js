@@ -6,14 +6,15 @@ const OLLAMA_API_URL = process.env.OLLAMA_API_URL;
 let isProcessing = false;
 let chatQueue = [];
 let runningRequests = {};
+let chatHistories = {};
 
-async function processOllamaModel(model, message, onChunk, signal) {
+async function processOllamaModel(model, messages, onChunk, signal) {
   try {
     const response = await axios.post(
-      `${OLLAMA_API_URL}/api/generate`,
+      `${OLLAMA_API_URL}/api/chat`,
       {
         model: model,
-        prompt: message,
+        messages: messages,
         stream: true
       },
       { responseType: 'stream', signal }
@@ -24,19 +25,24 @@ async function processOllamaModel(model, message, onChunk, signal) {
       crlfDelay: Infinity
     });
 
+    let fullResponse = '';
     for await (const line of rl) {
       if (line.trim()) {
         try {
           const jsonData = JSON.parse(line);
-          onChunk(jsonData.response);
+          if (jsonData.message?.content) {
+            const chunk = jsonData.message.content;
+            fullResponse += chunk;
+            onChunk(chunk);
+          }
         } catch (err) {
           console.error("Error parsing chunk:", err);
         }
       }
     }
+    return fullResponse;
   } catch (error) {
-    if (error.name === 'AbortError' || error.code === 'ERR_CANCELED') {
-    } else {
+    if (error.name !== 'AbortError' && error.code !== 'ERR_CANCELED') {
       console.error("Error calling Ollama API:", error);
       onChunk("Error generating response.");
     }
@@ -47,24 +53,36 @@ async function processOllamaModel(model, message, onChunk, signal) {
 async function processQueue() {
   if (isProcessing || chatQueue.length === 0) return;
   isProcessing = true;
+
   const { socket, message, model } = chatQueue.shift();
-  socket.emit('chat response', { chunk: '[STREAM_START]', model });
   
+  if (!chatHistories[socket.id]) {
+    chatHistories[socket.id] = [];
+  }
+
+  chatHistories[socket.id].push({ role: 'user', content: message });
+  
+  socket.emit('chat response', { chunk: '[STREAM_START]', model });
+
   const controller = new AbortController();
   runningRequests[socket.id] = controller;
 
   try {
-    await processOllamaModel(model, message, (chunk) => {
-      socket.emit('chat response', { chunk });
-    }, controller.signal);
+    const fullResponse = await processOllamaModel(
+      model,
+      [...chatHistories[socket.id]],
+      (chunk) => socket.emit('chat response', { chunk }),
+      controller.signal
+    );
+
+    chatHistories[socket.id].push({ role: 'assistant', content: fullResponse });
   } catch (error) {
-  }
-  
-  delete runningRequests[socket.id];
-  socket.emit('chat response', { chunk: '[STREAM_END]' });
-  isProcessing = false;
-  if (chatQueue.length > 0) {
-    processQueue();
+    chatHistories[socket.id].pop();
+  } finally {
+    delete runningRequests[socket.id];
+    socket.emit('chat response', { chunk: '[STREAM_END]' });
+    isProcessing = false;
+    if (chatQueue.length > 0) processQueue();
   }
 }
 
@@ -73,8 +91,13 @@ function addToQueue(socket, message, model) {
   processQueue();
 }
 
+function resetChatHistory(socketId) {
+  delete chatHistories[socketId];
+}
+
 function removeFromQueue(socketId) {
   chatQueue = chatQueue.filter(item => item.socket.id !== socketId);
+  resetChatHistory(socketId);
 }
 
 function stopProcessing(socket) {
@@ -87,5 +110,6 @@ function stopProcessing(socket) {
 module.exports = {
   addToQueue,
   removeFromQueue,
-  stopProcessing
+  stopProcessing,
+  resetChatHistory
 };
