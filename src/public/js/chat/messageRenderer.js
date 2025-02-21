@@ -21,6 +21,7 @@ export function appendMessage(html, sender = 'bot', modelName = '') {
         const modelLabel = document.createElement('div');
         modelLabel.className = 'text-xs text-gray-500 mt-1 ml-2';
         modelLabel.textContent = modelName;
+        container.appendChild(modelLabel);
     }
 
     chatWindow.appendChild(container);

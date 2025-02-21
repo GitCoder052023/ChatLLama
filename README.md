@@ -33,6 +33,7 @@ Welcome to **ChatLLama**, a modern real-time chat application that leverages loc
 - **Responsive & Modern UI:** Experience a sleek interface built with Tailwind CSS and enhanced with FontAwesome icons.
 - **Robust Database Integration:** All user data is securely stored in a MongoDB database.
 - **Dynamic Environment Configuration:** Automatically configures environment variables such as FRONTEND_ORIGIN based on your local IP.
+- **Model Selection:** Users can select from various AI models for personalized interactions.
 
 ---
 
@@ -131,6 +132,7 @@ To set up MongoDB for ChatLLama:
 
 3. **Chat:**
    - Use the intuitive chat interface to send messages and receive streaming responses from the local AI.
+   - Select your preferred AI model from the dropdown menu for personalized interactions.
    - Enjoy real-time updates via Socket.io.
 
 4. **Logout:**
