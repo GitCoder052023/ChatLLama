@@ -161,4 +161,4 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE.md) for mo
 
 ## Contact
 
-For question, support, or further inquiries, please contact us at [contact.khub.dev@gmail.com](mailto:contact.khub.dev@gmail.com).
+For questions, support, or further inquiries, please contact us at [contact.khub.dev@gmail.com](mailto:contact.khub.dev@gmail.com).

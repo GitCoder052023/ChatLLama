@@ -26,12 +26,32 @@ async function processOllamaModel(model, messages, onChunk, signal) {
     });
 
     let fullResponse = '';
+    let isThinking = false;
+
     for await (const line of rl) {
       if (line.trim()) {
         try {
           const jsonData = JSON.parse(line);
           if (jsonData.message?.content) {
             const chunk = jsonData.message.content;
+
+            if (chunk.includes('<think>')) {
+              isThinking = true;
+              onChunk(`<think>${chunk.replace('<think>', '')}`);
+              continue;
+            }
+
+            if (chunk.includes('</think>')) {
+              isThinking = false;
+              onChunk(`${chunk.replace('</think>', '')}</think>`); 
+              continue;
+            }
+
+            if (isThinking) {
+              onChunk(`<think>${chunk}</think>`); 
+              continue;
+            }
+
             fullResponse += chunk;
             onChunk(chunk);
           }
@@ -55,13 +75,13 @@ async function processQueue() {
   isProcessing = true;
 
   const { socket, message, model } = chatQueue.shift();
-  
+
   if (!chatHistories[socket.id]) {
     chatHistories[socket.id] = [];
   }
 
   chatHistories[socket.id].push({ role: 'user', content: message });
-  
+
   socket.emit('chat response', { chunk: '[STREAM_START]', model });
 
   const controller = new AbortController();
