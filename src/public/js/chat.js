@@ -2,10 +2,16 @@ import { appendMessage } from './chat/messageRenderer.js';
 import { initializeSocketEvents } from './chat/socketHandler.js';
 import { initProfile } from './chat/profileHandler.js';
 import { initializeModelSelector } from './chat/modelSelector.js';
+import { initializeConversations } from './chat/conversationHandler.js';
 
 const backendHost = document.querySelector('meta[name="backend-host"]').content;
 const BACKEND_URL = `http://${backendHost}:5000`;
 const socket = io(BACKEND_URL);
+
+const username = localStorage.getItem('username');
+if (!username) {
+	window.location.href = '/login';
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
 	initProfile(BACKEND_URL);
@@ -18,6 +24,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const chatForm = document.getElementById('chat-form');
 	const chatInput = document.getElementById('chat-input');
 	const sendButton = chatForm.querySelector('button[type="submit"]');
+
+	const conversationHandler = await initializeConversations(BACKEND_URL, appendMessage, socket);
 
 	const streamHandler = initializeSocketEvents(
 		socket, 
@@ -32,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 	});
 
-	chatForm.addEventListener('submit', (e) => {
+	chatForm.addEventListener('submit', async (e) => {
 		const greetingElem = document.getElementById('greeting-container');
 		if (greetingElem) {
 			greetingElem.classList.add('fade-out');
@@ -55,8 +63,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 		const selectedModelElem = document.getElementById('selected-model');
 		const selectedModel = selectedModelElem ? selectedModelElem.textContent.trim() : 'deepseek-r1:1.5b';
 		
+		let conversationId = conversationHandler.getCurrentConversationId();
+		if (!conversationId) {
+			conversationId = await conversationHandler.createNewConversation(message);
+		}
+
 		appendMessage(message, 'user');
-		socket.emit('chat message', { message, model: selectedModel });
+		socket.emit('chat message', { 
+			message, 
+			model: selectedModel,
+			conversationId 
+		});
 		chatInput.value = '';
 	});
 	

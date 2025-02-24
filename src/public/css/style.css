@@ -308,3 +308,49 @@ html {
     scrollbar-width: none;
   }
 }
+
+.conversation-item {
+  background-color: #f8f8f8;
+  transition: all 0.2s ease-in-out;
+}
+
+.conversation-item:hover {
+  background-color: #f0f0f0;
+}
+
+.dark .conversation-item {
+  background-color: #2d3748;
+}
+
+.dark .conversation-item:hover {
+  background-color: #4a5568;
+}
+
+.dark .conversation-item .text-gray-800 {
+  color: #ffffff;
+}
+
+.dark .conversation-item .text-gray-500 {
+  color: #cbd5e0;
+}
+
+.dark #sidebar {
+  border-color: #2d3748;
+}
+
+.delete-conversation {
+  transition: opacity 0.2s ease-in-out;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.conversation-item:hover .delete-conversation {
+  opacity: 1;
+}
+
+.delete-conversation:hover {
+  transform: scale(1.1);
+}
+

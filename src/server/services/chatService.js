@@ -1,7 +1,7 @@
 const axios = require('axios');
 const readline = require('readline');
-
-const OLLAMA_API_URL = process.env.OLLAMA_API_URL;
+const Conversation = require('../models/Conversation');
+const { OLLAMA_API_URL } = require('../config/config');
 
 let isProcessing = false;
 let chatQueue = [];
@@ -74,13 +74,42 @@ async function processQueue() {
   if (isProcessing || chatQueue.length === 0) return;
   isProcessing = true;
 
-  const { socket, message, model } = chatQueue.shift();
+  const { socket, message, model, conversationId } = chatQueue.shift();
 
   if (!chatHistories[socket.id]) {
     chatHistories[socket.id] = [];
   }
 
   chatHistories[socket.id].push({ role: 'user', content: message });
+
+  if (conversationId) {
+    try {
+      const conversation = await Conversation.findById(conversationId);
+      if (conversation && conversation.messages.length === 0) {
+        conversation.title = message.substring(0, 50) + (message.length > 50 ? '...' : '');
+        conversation.messages.push({ content: message, role: 'user' });
+        conversation.lastUpdated = Date.now();
+        await conversation.save();
+        
+        socket.emit('conversation_updated', {
+          id: conversationId,
+          title: conversation.title
+        });
+      } else {
+        await Conversation.findByIdAndUpdate(conversationId, {
+          $push: { 
+            messages: { 
+              content: message, 
+              role: 'user'
+            } 
+          },
+          lastUpdated: Date.now()
+        });
+      }
+    } catch (error) {
+      console.error('Error saving user message:', error);
+    }
+  }
 
   socket.emit('chat response', { chunk: '[STREAM_START]', model });
 
@@ -96,6 +125,23 @@ async function processQueue() {
     );
 
     chatHistories[socket.id].push({ role: 'assistant', content: fullResponse });
+
+    if (conversationId) {
+      try {
+        await Conversation.findByIdAndUpdate(conversationId, {
+          $push: { 
+            messages: { 
+              content: fullResponse, 
+              role: 'assistant', 
+              modelName: model 
+            } 
+          },
+          lastUpdated: Date.now()
+        });
+      } catch (error) {
+        console.error('Error saving assistant response:', error);
+      }
+    }
   } catch (error) {
     chatHistories[socket.id].pop();
   } finally {
@@ -106,8 +152,8 @@ async function processQueue() {
   }
 }
 
-function addToQueue(socket, message, model) {
-  chatQueue.push({ socket, message, model });
+function addToQueue(socket, message, model, conversationId) {
+  chatQueue.push({ socket, message, model, conversationId });
   processQueue();
 }
 

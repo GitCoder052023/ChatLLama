@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const OLLAMA_API_URL = process.env.OLLAMA_API_URL; 
+const { OLLAMA_API_URL } = require('../config/config');
 
 router.get('/', async (req, res) => {
   try {
@@ -10,7 +10,11 @@ router.get('/', async (req, res) => {
     res.json({ success: true, models });
   } catch (err) {
     console.error('Error fetching models:', err);
-    res.json({ success: false, message: 'Failed to fetch models from Ollama API' });
+    res.json({ 
+      success: false, 
+      message: 'Failed to fetch models from Ollama API',
+      models: [{ name: 'deepseek-r1:1.5b' }] // Fallback model
+    });
   }
 });
 

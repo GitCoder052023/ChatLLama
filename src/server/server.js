@@ -11,6 +11,9 @@ const connectDatabase = require('./config/database');
 const authRoutes = require('./routes/auth');
 const modelsRoutes = require('./routes/models');
 const getLocalIPv4 = require('./utils/getLocalIPv4');
+const conversationsRoutes = require('./routes/conversations');
+const { PORT, HOST } = require('./config/config');
+const initializeSocket = require('./socket/chatSocket');
 
 const app = express();
 const server = http.createServer(app);
@@ -41,12 +44,10 @@ connectDatabase();
 
 app.use('/api', authRoutes);
 app.use('/api/models', modelsRoutes);
+app.use('/api/conversations', conversationsRoutes);
 
-const initializeSocket = require('./socket/chatSocket');
 initializeSocket(server);
 
-const BACKEND_PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || getLocalIPv4();
-server.listen(BACKEND_PORT, () => {
-  console.log(`ChatLLama Server running on port http://${HOST}:${BACKEND_PORT}`);
+server.listen(PORT, () => {
+  console.log(`ChatLLama Server running on port http://${HOST}:${PORT}`);
 });

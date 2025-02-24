@@ -32,6 +32,16 @@ app.get('/chat', (req, res) => {
   });
 });
 
+// Add before the catch-all route
+app.get('/chat/:id', (req, res) => {
+  res.redirect('/chat');
+});
+
+// Catch all undefined routes
+app.use((req, res) => {
+  res.redirect('/chat');
+});
+
 app.listen(PORT, () => {
   console.log(`ChatLLama app running on port http://${HOST}:${PORT}`);
 });

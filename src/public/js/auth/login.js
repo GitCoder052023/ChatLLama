@@ -1,3 +1,8 @@
+const username = localStorage.getItem('username');
+if (username) {
+  window.location.href = '/chat';
+}
+
 const backendHost = document.querySelector('meta[name="backend-host"]').content;
 const BACKEND_URL = `http://${backendHost}:5000`;
 
