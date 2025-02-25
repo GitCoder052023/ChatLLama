@@ -49,7 +49,8 @@ export function initProfile(BACKEND_URL) {
 
     const username = localStorage.getItem('username');
     if (username && profileInitials) {
-        profileInitials.textContent = getInitials(username);
+        const trimmedName = getTrimmedName(username);
+        profileInitials.textContent = getInitials(trimmedName);
         profileIcon.style.backgroundColor = stringToColor(username);
     }
 
@@ -59,7 +60,8 @@ export function initProfile(BACKEND_URL) {
 
         const popupUsername = document.getElementById('popup-username');
         const popupEmail = document.getElementById('popup-email');
-        popupUsername.textContent = localStorage.getItem('username') || '';
+        const storedUsername = localStorage.getItem('username');
+        popupUsername.textContent = storedUsername ? getTrimmedName(storedUsername) : '';
         popupEmail.textContent = localStorage.getItem('email') || '';
     });
 
@@ -115,4 +117,10 @@ function getInitials(name) {
     if (parts.length === 0) return "";
     if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
     return parts[0].charAt(0).toUpperCase() + parts[parts.length - 1].charAt(0).toUpperCase();
+}
+
+export function getTrimmedName(fullName) {
+    const nameParts = fullName.trim().split(/\s+/);
+    if (nameParts.length <= 2) return fullName;
+    return `${nameParts[0]} ${nameParts[1]}`;
 }

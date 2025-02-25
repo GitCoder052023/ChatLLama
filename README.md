@@ -27,6 +27,7 @@ Welcome to **ChatLLama**, a modern real-time chat application that leverages loc
 
 ## Features
 
+### Core Features
 - **Real-Time Messaging:** Engage in dynamic, live conversations enabled by Socket.io with smooth, streaming chat responses.
 - **Local AI Integration:** Interact with local Ollama models that process your messages and deliver intelligent, streamed responses.
 - **Secure User Authentication:** Register and log in safely with bcrypt-based password hashing and Gmail address verification.
@@ -34,6 +35,79 @@ Welcome to **ChatLLama**, a modern real-time chat application that leverages loc
 - **Robust Database Integration:** All user data is securely stored in a MongoDB database.
 - **Dynamic Environment Configuration:** Automatically configures environment variables such as FRONTEND_ORIGIN based on your local IP.
 - **Model Selection:** Users can select from various AI models for personalized interactions.
+
+### Security & Authentication
+- **Advanced Authentication:**
+  - Bcrypt password hashing
+  - Session-based authentication
+  - Gmail address validation
+  - Secure logout handling
+  - Session timeout protection
+
+### Enhanced UI Features
+- **Profile Management:**
+  - Auto-generated profile icons
+  - Dynamic initials display
+  - Unique color generation per user
+  - Hover animations and effects
+- **Responsive Design:**
+  - Custom mobile-friendly sidebar
+  - Adaptive scrollbar styling
+  - Smooth transition animations
+  - Keyboard shortcut support
+
+### Advanced Chat Capabilities
+- **Message Handling:**
+  - Streaming control (pause/stop)
+  - Markdown formatting support
+  - Code syntax highlighting
+  - Expandable thinking sections
+  - Auto-scroll functionality
+  - Timestamp integration
+  - Model-specific labeling
+
+### Extended Conversation Features
+- **Management Tools:**
+  - Session persistence
+  - Real-time synchronization
+  - Smart conversation naming
+  - Advanced search capabilities
+  - Secure deletion with confirmation
+  - Empty conversation prevention
+
+### Technical Enhancements
+- **System Integration:**
+  - WebSocket reconnection handling
+  - Automatic IP configuration
+  - CORS security setup
+  - MongoDB connection management
+  - Environment auto-configuration
+  - Concurrent development support
+
+### Additional Features
+- **Theme Customization:**
+  - Light, Dark, and System theme options
+  - Persistent theme preferences
+  - Automatic system theme detection
+  
+- **Conversation Management:**
+  - Searchable conversation history
+  - Auto-generated conversation titles
+  - Real-time conversation updates
+  - One-click conversation deletion
+  
+- **Enhanced AI Interactions:**
+  - Live streaming responses with thinking indicators
+  - Ability to stop ongoing AI responses
+  - Expandable reasoning sections for AI explanations
+  - Model-specific response tracking
+  
+- **UI Enhancements:**
+  - Smooth animations and transitions
+  - Collapsible mobile-friendly sidebar
+  - Custom-styled scrollbars
+  - Message bubble animations
+  - Real-time typing indicators
 
 ---
 

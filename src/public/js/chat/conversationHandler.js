@@ -8,6 +8,7 @@ export async function initializeConversations(BACKEND_URL, appendMessageCallback
     if (conversationElem) {
       const titleElem = conversationElem.querySelector('.text-sm');
       titleElem.textContent = data.title;
+      updateNewChatButtonState()
     }
   });
 
@@ -51,6 +52,7 @@ export async function initializeConversations(BACKEND_URL, appendMessageCallback
           `).join('');
 
         attachConversationListeners();
+        updateNewChatButtonState()
       }
     } catch (error) {
       console.error('Error loading conversations:', error);
@@ -72,6 +74,7 @@ export async function initializeConversations(BACKEND_URL, appendMessageCallback
       if (data.success) {
         currentConversationId = data.conversationId;
         await loadConversations();
+        updateNewChatButtonState()
         return currentConversationId;
       }
     } catch (error) {
@@ -127,6 +130,23 @@ export async function initializeConversations(BACKEND_URL, appendMessageCallback
     currentConversationId = await createNewConversation();
     window.history.pushState({}, '', `/chat/${currentConversationId}`);
   });
+
+  function updateNewChatButtonState() {
+    const newChatExists = Array.from(document.querySelectorAll('.conversation-item'))
+      .some(item => item.querySelector('.text-sm').textContent === 'New Chat');
+    
+    const newChatButton = document.getElementById('new-chat');
+    if (newChatExists) {
+      newChatButton.disabled = true;
+      newChatButton.classList.remove('cursor-pointer')
+      newChatButton.classList.add('opacity-50');
+      newChatButton.title = 'Please start a conversation in the current New Chat first';
+    } else {
+      newChatButton.disabled = false;
+      newChatButton.classList.remove('opacity-50');
+      newChatButton.removeAttribute('title');
+    }
+  }
 
   return {
     getCurrentConversationId: () => currentConversationId,

@@ -1,6 +1,6 @@
 import { appendMessage } from './chat/messageRenderer.js';
 import { initializeSocketEvents } from './chat/socketHandler.js';
-import { initProfile } from './chat/profileHandler.js';
+import { initProfile, getTrimmedName } from './chat/profileHandler.js';
 import { initializeModelSelector } from './chat/modelSelector.js';
 import { initializeConversations } from './chat/conversationHandler.js';
 
@@ -16,9 +16,9 @@ if (!username) {
 document.addEventListener('DOMContentLoaded', async () => {
 	initProfile(BACKEND_URL);
 	initializeModelSelector(BACKEND_URL);
-	
+
 	const chatWindow = document.getElementById('chat-window');
-	
+
 	chatWindow.appendChild(createGreetingContainer());
 
 	const chatForm = document.getElementById('chat-form');
@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const conversationHandler = await initializeConversations(BACKEND_URL, appendMessage, socket);
 
 	const streamHandler = initializeSocketEvents(
-		socket, 
-		{ chatWindow, sendButton, chatInput }, 
+		socket,
+		{ chatWindow, sendButton, chatInput },
 		appendMessage
 	);
 
@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 				if (greetingElem.parentNode) {
 					greetingElem.parentNode.removeChild(greetingElem);
 				}
-			}, 500); 
+			}, 500);
 		}
-		
+
 		e.preventDefault();
 		if (streamHandler.isStreaming) {
 			socket.emit('stop chat message');
@@ -59,29 +59,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 		const message = chatInput.value.trim();
 		if (!message) return;
-		
+
 		const selectedModelElem = document.getElementById('selected-model');
 		const selectedModel = selectedModelElem ? selectedModelElem.textContent.trim() : 'deepseek-r1:1.5b';
-		
+
 		let conversationId = conversationHandler.getCurrentConversationId();
 		if (!conversationId) {
 			conversationId = await conversationHandler.createNewConversation(message);
 		}
 
 		appendMessage(message, 'user');
-		socket.emit('chat message', { 
-			message, 
+		socket.emit('chat message', {
+			message,
 			model: selectedModel,
-			conversationId 
+			conversationId
 		});
 		chatInput.value = '';
 	});
-	
+
 	document.getElementById('new-chat').addEventListener('click', () => {
 		chatWindow.innerHTML = '';
 		chatWindow.appendChild(createGreetingContainer());
 	});
-	
+
 	const sidebar = document.getElementById('sidebar');
 	const headerTitle = document.getElementById('header-title');
 
@@ -113,11 +113,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 		chatWindow.innerHTML = '';
 		chatWindow.appendChild(createGreetingContainer());
 		socket.emit('reset_chat');
-	  });
+	});
 });
 
 function createGreetingContainer() {
 	const username = localStorage.getItem('username');
+	const trimmedName = getTrimmedName(username);
+
 	const container = document.createElement('div');
 	container.id = 'greeting-container';
 	container.className = 'flex justify-center items-center my-8';
@@ -130,7 +132,7 @@ function createGreetingContainer() {
 	heading.style.backgroundClip = 'text';
 	heading.style.webkitTextFillColor = 'transparent';
 	heading.style.textAlign = 'center';
-	heading.innerHTML = `Hello, ${username}`;
+	heading.innerHTML = `Hello, ${trimmedName}`;
 
 	container.appendChild(heading);
 	return container;

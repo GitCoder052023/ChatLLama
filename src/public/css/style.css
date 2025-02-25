@@ -55,14 +55,8 @@ html {
 #chat-window {
   scroll-behavior: smooth;
   padding: 1rem;
-  overflow-y: auto; 
-  -webkit-overflow-scrolling: touch; 
-  scrollbar-width: none; 
-  -ms-overflow-style: none; 
-}
-
-#chat-window::-webkit-scrollbar {
-  display: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .message-container:last-child {

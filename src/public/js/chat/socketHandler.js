@@ -3,6 +3,17 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
     let currentTypingElem = null;
     let streaming = false;
     let currentModel = null;
+    let scrollInterval = null;
+
+    function smoothScrollToBottom() {
+        const isAtBottom = chatWindow.scrollHeight - chatWindow.clientHeight <= chatWindow.scrollTop + 100;
+        if (isAtBottom) {
+            chatWindow.scrollTo({ 
+                top: chatWindow.scrollHeight, 
+                behavior: 'smooth' 
+            });
+        }
+    }
 
     socket.on('chat response', (data) => {
         const chunk = data.chunk;
@@ -15,6 +26,9 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
             streaming = true;
             sendButton.innerHTML = '<i class="fas fa-stop text-lg"></i>';
             chatInput.required = false;
+            
+            scrollInterval = setInterval(smoothScrollToBottom, 100);
+            
         } else if (chunk === '[STREAM_END]') {
             if (currentTypingElem) {
                 chatWindow.removeChild(currentTypingElem);
@@ -26,6 +40,16 @@ export function initializeSocketEvents(socket, { chatWindow, sendButton, chatInp
             streaming = false;
             sendButton.innerHTML = '<i class="fas fa-paper-plane text-lg"></i>';
             chatInput.required = true;
+            
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
+            
+            setTimeout(() => {
+                chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+            }, 100);
+            
         } else {
             currentResponse += chunk;
             if (currentTypingElem) {
