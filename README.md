@@ -171,27 +171,16 @@ To set up MongoDB for ChatLLama:
 2. **Install Dependencies:**
 
    ```
-   npm install
+   npm i
    ```
 
-3. **Set Up Environment Variables:**
+3. **Run the Application:**
 
-   - Create a `.env` file in the root directory.
-   - Add at least the following variable (the app auto-updates additional variables on startup):
-     ```
-     OLLAMA_API_URL=http://localhost:11434
-     ```
-
-4. **Run the Application:**
-
-   To start the frontend, backend, and Tailwind CSS build concurrently, run:
+   To start the application, run:
 
    ```
    npm run dev
    ```
-
-   - The frontend server runs at [http://localhost:3001](http://localhost:3001).
-   - The backend server runs at [http://localhost:5000](http://localhost:5000).
 
 ---
 
