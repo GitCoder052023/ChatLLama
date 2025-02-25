@@ -34,10 +34,28 @@ router.get('/detail/:id', async (req, res) => {
   }
 });
 
+router.get('/user/:email', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const conversations = await Conversation.find({ userId: user._id })
+      .sort({ lastUpdated: -1 })
+      .select('title lastUpdated');
+
+    res.json({ success: true, conversations });
+  } catch (error) {
+    console.error('Error fetching conversations:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch conversations' });
+  }
+});
+
 router.post('/', async (req, res) => {
   try {
-    const { username, title } = req.body;
-    const user = await User.findOne({ username });
+    const { username, email, title } = req.body;
+    const user = await User.findOne({ email });
     
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });

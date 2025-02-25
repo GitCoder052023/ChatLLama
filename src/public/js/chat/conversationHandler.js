@@ -1,6 +1,7 @@
 export async function initializeConversations(BACKEND_URL, appendMessageCallback, socket) {
   const sidebar = document.querySelector('#sidebar .flex-1');
   const username = localStorage.getItem('username');
+  const email = localStorage.getItem('email');
   let currentConversationId = null;
 
   socket.on('conversation_updated', (data) => {
@@ -36,7 +37,7 @@ export async function initializeConversations(BACKEND_URL, appendMessageCallback
 
   async function loadConversations() {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/conversations/${username}`);
+      const response = await fetch(`${BACKEND_URL}/api/conversations/user/${email}`);
       const data = await response.json();
       
       if (data.success) {
@@ -66,6 +67,7 @@ export async function initializeConversations(BACKEND_URL, appendMessageCallback
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           username, 
+          email,
           title: firstMessage ? firstMessage.substring(0, 50) + (firstMessage.length > 50 ? '...' : '') : 'New Chat'
         })
       });
